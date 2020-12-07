@@ -1,0 +1,152 @@
+shiny::runApp('finalproject')
+CompsheetNAMES <- tibble(inputnames = c("2018 Olympics",
+"2017 Grand Prix Final",
+"2017 Skate America",
+"2017 Internationaux de France",
+"2017 NHK Trophy",
+"2017 Cup of China",
+"2017 Skate Canada International",
+"2017 Rostelecom Cup"),
+firstfilter = c("2018 Olympic Games Ice Dance Short",
+"2017 Grand Prix Final Ice Dance Short",
+"2017 Grand Prix USA Ice Dance Short",
+"2017 Grand Prix IDF Ice Dance Short",
+"2017 Grand Prix NHK Ice Dance Short",
+"2017 Grand Prix COC Ice Dance Short",
+"2017 Grand Prix SCI Ice Dance Short",
+"2017 Grand Prix RCM Ice Dance Short"),
+secondfilter = c("2018 Olympic Games Ice Dance Free",
+"2017 Grand Prix Final Ice Dance Free",
+"2017 Grand Prix USA Ice Dance Free",
+"2017 Grand Prix IDF Ice Dance Free",
+"2017 Grand Prix NHK Ice Dance Free",
+"2017 Grand Prix COC Ice Dance Free",
+"2017 Grand Prix SCI Ice Dance Free",
+"2017 Grand Prix RCM Ice Dance Free"))
+CompsheetNAMES
+runApp('finalproject')
+CompsheetNAMES
+[CompsheetNAMES$inputnames == "2018 Olympics"]
+CompsheetNAMES$inputnames == "2018 Olympics"
+CompsheetNAMES$secondfilter[CompsheetNAMES$inputnames == "2018 Olympics"]
+runApp('finalproject')
+Compsheet
+runApp('finalproject')
+Compsheet <- read_csv("eventssheet/compsheet.csv",
+col_types = cols(X1 = col_double(),
+Name = col_character(),
+judge_country = col_character(),
+number = col_double(),
+segment = col_character(),
+skater = col_character(),
+skater_country = col_character(),
+TSS = col_double()))
+TSS = col_double()))
+Compsheet <- Compsheet %>%
+group_by(segment, skater) %>%
+mutate(meanTSS = mean(TSS)) %>%
+mutate(stddevTSS = sd(TSS)) %>%
+mutate(normTSS = (TSS - meanTSS)/stddevTSS) %>%
+mutate(same_country = ifelse(skater_country == judge_country, TRUE, FALSE))
+setwd("~/Documents/GOV 50 PROJECTS/gov50finalappicedance/finalproject")
+TSS = col_double()))
+Compsheet <- Compsheet %>%
+group_by(segment, skater) %>%
+mutate(meanTSS = mean(TSS)) %>%
+mutate(stddevTSS = sd(TSS)) %>%
+mutate(normTSS = (TSS - meanTSS)/stddevTSS) %>%
+mutate(same_country = ifelse(skater_country == judge_country, TRUE, FALSE))
+Compsheet <- read_csv("eventssheet/compsheet.csv",
+col_types = cols(X1 = col_double(),
+Name = col_character(),
+judge_country = col_character(),
+number = col_double(),
+segment = col_character(),
+skater = col_character(),
+skater_country = col_character(),
+TSS = col_double()))
+skater = col_character(),
+skater_country = col_character(),
+TSS = col_double()))
+Compsheet <- Compsheet %>%
+group_by(segment, skater) %>%
+mutate(meanTSS = mean(TSS)) %>%
+mutate(stddevTSS = sd(TSS)) %>%
+mutate(normTSS = (TSS - meanTSS)/stddevTSS) %>%
+mutate(same_country = ifelse(skater_country == judge_country, TRUE, FALSE))
+CompsheetNAMES <- tibble(inputnames = c("2018 Olympics",
+"2017 Grand Prix Final",
+"2017 Skate America",
+"2017 Internationaux de France",
+"2017 NHK Trophy",
+"2017 Cup of China",
+"2017 Skate Canada International",
+"2017 Rostelecom Cup"),
+firstfilter = c("2018 Olympic Games Ice Dance Short",
+"2017 Grand Prix Final Ice Dance Short",
+"2017 Grand Prix USA Ice Dance Short",
+"2017 Grand Prix IDF Ice Dance Short",
+"2017 Grand Prix NHK Ice Dance Short",
+"2017 Grand Prix COC Ice Dance Short",
+"2017 Grand Prix SCI Ice Dance Short",
+"2017 Grand Prix RCM Ice Dance Short"),
+secondfilter = c("2018 Olympic Games Ice Dance Free",
+"2017 Grand Prix Final Ice Dance Free",
+"2017 Grand Prix USA Ice Dance Free",
+"2017 Grand Prix IDF Ice Dance Free",
+"2017 Grand Prix NHK Ice Dance Free",
+"2017 Grand Prix COC Ice Dance Free",
+"2017 Grand Prix SCI Ice Dance Free",
+"2017 Grand Prix RCM Ice Dance Free"))
+Compsheet
+runApp()
+print(icedanceshort)
+icedanceshort <- CompsheetNAMES$firstfilter[CompsheetNAMES$inputnames == input$competitionid]
+icedancefree <- CompsheetNAMES$secondfilter[CompsheetNAMES$inputnames == input$competitionid]
+print(icedanceshort)
+runApp()
+Compsheet %>%
+filter(segment %in% c("2017 Grand Prix Final Ice Dance Short",
+"2017 Grand Prix Final Ice Dance Free" )) %>%
+group_by(skater) %>%
+summarize(sum_TSS = (sum(meanTSS)/9), country = skater_country[1], .groups = "drop") %>%
+ggplot(aes(x = fct_reorder(skater, sum_TSS), y = sum_TSS, fill = country)) +
+geom_bar(stat = "identity") +
+scale_fill_manual(name = "Country", values = c("Red2", "mediumblue", "Green4", "turquoise3")) +
+coord_flip() +
+theme_classic() +
+labs(title = "2017 Grand Prix Final Ice Dance Competition Results",
+x = "Skating Pair",
+y = "Total Competition Score (sum of mean segment scores)"
+runApp()
+runApp()
+runApp()
+runApp()
+runApp()
+runApp()
+runApp()
+runApp()
+runApp()
+runApp()
+runApp()
+runApp()
+runApp()
+runApp()
+runApp()
+runApp()
+runApp()
+runApp()
+runApp()
+runApp()
+runApp()
+runApp()
+runApp()
+runApp()
+runApp()
+library(gt)
+runApp()
+runApp()
+runApp()
+runApp()
+runApp()
+install.packages("shinythemes")

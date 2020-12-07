@@ -1,0 +1,206 @@
+#
+# This is a Shiny web application. You can run the application by clicking
+# the 'Run App' button above.
+#
+# Find out more about building applications with Shiny here:
+#
+#    http://shiny.rstudio.com/
+#
+
+library(shiny)
+library(tidyverse)
+library(tidymodels)
+library(rstanarm)
+
+Compsheet <- read_csv("eventssheet/compsheet.csv",
+                      col_types = cols(X1 = col_double(),
+                                       Name = col_character(),
+                                       judge_country = col_character(),
+                                       number = col_double(),
+                                       segment = col_character(),
+                                       skater = col_character(),
+                                       skater_country = col_character(),
+                                       TSS = col_double()))
+
+Compsheet <- Compsheet %>% 
+    group_by(segment, skater) %>% 
+    mutate(meanTSS = mean(TSS)) %>% 
+    mutate(stddevTSS = sd(TSS)) %>% 
+    mutate(normTSS = (TSS - meanTSS)/stddevTSS) %>%
+    mutate(same_country = ifelse(skater_country == judge_country, TRUE, FALSE))
+
+# Define UI for application that draws a histogram
+ui <- fluidPage(
+
+    # Application title
+    titlePanel("International Judging Biases in Ice Dance over the 2017-2018 Season"),
+
+    # Sidebar with a slider input for number of bins 
+    sidebarLayout(
+        sidebarPanel(
+           
+             selectInput("competitionplot", 
+                        "Competition",
+                        c("2018 Olympics" = "a", 
+                          "2017 Grand Prix Final" = "b",
+                          "2017 Skate America" = "c",
+                          "2017 Internationaux de France" = "d",
+                          "2017 NHK Trophy" = "e",
+                          "2017 Cup of China" = "f",
+                          "2017 Skate Canada International" = "g",
+                          "2017 Rostelecom Cup" = "h"),
+                        plotOutput("competitionplot"))
+        ),
+
+        # Show a plot of the generated distribution
+        mainPanel(
+
+        )
+    )
+)
+
+# Define server logic required to draw a histogram
+server <- function(input, output) {
+    olympics <- Compsheet %>%
+        filter(segment %in% c("2018 Olympic Games Ice Dance Short", 
+                              "2018 Olympic Games Ice Dance Free" )) %>% 
+        group_by(skater) %>%
+        summarize(sum_TSS = (sum(meanTSS)/9), country = skater_country[1], .groups = "drop") %>%
+        ggplot(aes(x = fct_reorder(skater, sum_TSS), y = sum_TSS, fill = country)) +
+        geom_bar(stat = "identity") + 
+        # scale_fill_manual(values = c(""))
+        coord_flip() +
+        theme_classic()
+    
+    output$competitionplot <- renderPlot({
+        case_when(input$competitionplot == "a" ~ {
+            Compsheet %>%
+                filter(segment %in% c("2018 Olympic Games Ice Dance Short", 
+                                      "2018 Olympic Games Ice Dance Free" )) %>% 
+                group_by(skater) %>%
+                summarize(sum_TSS = (sum(meanTSS)/9), country = skater_country[1], .groups = "drop") %>%
+                ggplot(aes(x = fct_reorder(skater, sum_TSS), y = sum_TSS, fill = country)) +
+                geom_bar(stat = "identity") + 
+                # scale_fill_manual(values = c(""))
+                coord_flip() +
+                theme_classic()})
+    })
+   
+    
+    output$gpf <- renderPlot({Compsheet %>%
+            filter(segment %in% c("2017 Grand Prix Final Ice Dance Short", 
+                                  "2017 Grand Prix Final Ice Dance Free" )) %>% 
+            group_by(skater) %>%
+            summarize(sum_TSS = (sum(meanTSS)/9), country = skater_country[1], .groups = "drop") %>%
+            ggplot(aes(x = fct_reorder(skater, sum_TSS), y = sum_TSS, fill = country)) +
+            geom_bar(stat = "identity") + 
+            scale_fill_manual(name = "Country", values = c("Red2", "mediumblue", "Green4", "turquoise3")) +
+            coord_flip() +
+            theme_classic() +
+            labs(title = "2017 Grand Prix Final Ice Dance Competition Results",
+                 x = "Skating Pair", 
+                 y = "Total Competition Score (sum of mean segment scores)")
+    })
+    
+    output$usa <- renderPlot({Compsheet %>%
+            filter(segment %in% c("2017 Grand Prix USA Ice Dance Short", 
+                                  "2017 Grand Prix USA Ice Dance Free" )) %>% 
+            group_by(skater) %>%
+            summarize(sum_TSS = (sum(meanTSS)/9), country = skater_country[1], .groups = "drop") %>%
+            ggplot(aes(x = fct_reorder(skater, sum_TSS), y = sum_TSS, fill = country)) +
+            geom_bar(stat = "identity") + 
+            scale_fill_manual(name = "Country", values = c("red2", "maroon1", "Green4", 
+                                                           "seagreen1", "navyblue", 
+                                                           "turquoise3")) +
+            coord_flip() +
+            theme_classic() +
+            labs(title = "2017 Skate America Grand Prix Ice Dance Competition Results",
+                 x = "Skating Pair", 
+                 y = "Total Competition Score (sum of mean segment scores)")
+    })
+    
+    
+    output$idf <- renderPlot({Compsheet %>%
+            filter(segment %in% c("2017 Grand Prix IDF Ice Dance Short", 
+                                  "2017 Grand Prix IDF Ice Dance Free" )) %>% 
+            group_by(skater) %>%
+            summarize(sum_TSS = (sum(meanTSS)/9), country = skater_country[1], .groups = "drop") %>%
+            ggplot(aes(x = fct_reorder(skater, sum_TSS), y = sum_TSS, fill = country)) +
+            geom_bar(stat = "identity") + 
+            scale_fill_manual(name = "Country", values = c("red2", "mediumblue", 
+                                                           "Green4","yellow1", "navyblue", 
+                                                           "turquoise3")) +  
+            coord_flip() +
+            theme_classic() +
+            labs(title = "2017 Internationaux de France Grand Prix Ice Dance Competition Results",
+                 x = "Skating Pair", 
+                 y = "Total Competition Score (sum of mean segment scores)")
+        
+    })
+    
+    output$nhk <- renderPlot({Compsheet %>%
+        filter(segment %in% c("2017 Grand Prix NHK Ice Dance Short", 
+                              "2017 Grand Prix NHK Ice Dance Free" )) %>% 
+        group_by(skater) %>%
+        summarize(sum_TSS = (sum(meanTSS)/9), country = skater_country[1], .groups = "drop") %>%
+        ggplot(aes(x = fct_reorder(skater, sum_TSS), y = sum_TSS, fill = country)) +
+        geom_bar(stat = "identity") + 
+        scale_fill_manual(name = "Country", values = c("red2", "yellow1", 
+                                                       "mediumblue", "magenta1", 
+                                                       "Green4", "seagreen1", 
+                                                       "navyblue", "purple1",
+                                                       "turquoise3")) +    
+        coord_flip() +
+        theme_classic() +
+        labs(title = "2017 NHK Grand Prix Ice Dance Competition Results",
+             x = "Skating Pair", 
+             y = "Total Competition Score (sum of mean segment scores)")})
+    
+    output$coc <- renderPlot({Compsheet %>%
+            filter(segment %in% c("2017 Grand Prix COC Ice Dance Short", 
+                                  "2017 Grand Prix COC Ice Dance Free" )) %>% 
+            group_by(skater) %>%
+            summarize(sum_TSS = (sum(meanTSS)/9), country = skater_country[1], .groups = "drop") %>%
+            ggplot(aes(x = fct_reorder(skater, sum_TSS), y = sum_TSS, fill = country)) +
+            geom_bar(stat = "identity") + 
+            scale_fill_manual(name = "Country", values = c("maroon1", "mediumblue", 
+                                                           "navyblue", "turquoise3")) +
+            coord_flip() +
+            theme_classic() +
+            labs(title = "2017 Cup of China Grand Prix Ice Dance Competition Results",
+                 x = "Skating Pair", 
+                 y = "Total Competition Score (sum of mean segment scores)")})
+    
+    output$sci <- renderPlot({Compsheet %>%
+            filter(segment %in% c("2017 Grand Prix SCI Ice Dance Short", 
+                                  "2017 Grand Prix SCI Ice Dance Free" )) %>% 
+            group_by(skater) %>%
+            summarize(sum_TSS = (sum(meanTSS)/9), country = skater_country[1], .groups = "drop") %>%
+            ggplot(aes(x = fct_reorder(skater, sum_TSS), y = sum_TSS, fill = country)) +
+            geom_bar(stat = "identity") + 
+            # scale_fill_manual(values = c(""))
+            coord_flip() +
+            theme_classic() +
+            labs(title = "2017 Skate Canada International Grand Prix Ice Dance Competition Results",
+                 x = "Skating Pair", 
+                 y = "Total Competition Score (sum of mean segment scores)")})
+    
+    output$rcm <- renderPlot({Compsheet %>%
+            filter(segment %in% c("2017 Grand Prix RCM Ice Dance Short", 
+                                  "2017 Grand Prix RCM Ice Dance Free" )) %>% 
+            group_by(skater) %>%
+            summarize(sum_TSS = (sum(meanTSS)/9), country = skater_country[1], .groups = "drop") %>%
+            ggplot(aes(x = fct_reorder(skater, sum_TSS), y = sum_TSS, fill = country)) +
+            geom_bar(stat = "identity") + 
+            scale_fill_manual(name = "Country", values = c("red1", "purple", "mediumblue", 
+                                                           "green4", "navyblue", 
+                                                           "violetred1", "turquoise3")) +
+            coord_flip() +
+            theme_classic() +
+            labs(title = "2017 Rostelecom Cup Grand Prix Ice Dance Competition Results",
+                 x = "Skating Pair", 
+                 y = "Total Competition Score (sum of mean segment scores)")})
+}
+
+# Run the application 
+shinyApp(ui = ui, server = server)

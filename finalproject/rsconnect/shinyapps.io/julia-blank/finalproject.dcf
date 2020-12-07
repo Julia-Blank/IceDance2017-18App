@@ -1,0 +1,12 @@
+name: finalproject
+title: finalproject
+username:
+account: julia-blank
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 3342368
+bundleId: 3952547
+url: https://julia-blank.shinyapps.io/finalproject/
+when: 1607301855.04885
+asMultiple: FALSE
+asStatic: FALSE
