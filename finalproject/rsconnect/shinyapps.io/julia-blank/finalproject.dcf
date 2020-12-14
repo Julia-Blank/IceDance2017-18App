@@ -5,8 +5,8 @@ account: julia-blank
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 3342368
-bundleId: 3952547
+bundleId: 3960915
 url: https://julia-blank.shinyapps.io/finalproject/
-when: 1607301855.04885
+when: 1607446605.48459
 asMultiple: FALSE
 asStatic: FALSE
